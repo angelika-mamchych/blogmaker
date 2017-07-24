@@ -1,0 +1,7 @@
+DEBUG = False
+SECRET_KEY = 'put_random_secret_string'
+MYSQL_HOST = 'localhost'
+MYSQL_USER = 'your_db_user'
+MYSQL_PASSWORD = 'put_db_pass'
+MYSQL_DB = 'blogmaker'
+MYSQL_CURSORCLASS = 'DictCursor'
