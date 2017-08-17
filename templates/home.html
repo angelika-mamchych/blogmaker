@@ -7,6 +7,13 @@
   Where, we supose to, you can find all information that you need in a very short term.
   We want to save your time!
  </p>
+ <p>Your langugage is
+ {% if request.cookies.get('language') == 'en' %}
+  English
+ {% else %}
+ Ukrainian
+ {% endif %}
+ </p>
 </div>
+ {% endblock %}
 
-{% endblock %}

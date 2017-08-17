@@ -162,7 +162,9 @@ def dashboard():
 # Article form class
 class ArticleForm(Form):
     title = StringField('Title', [validators.Length(min=1, max=200)])
+    title_uk = StringField('Title UK', [validators.Length(min=1, max=200)])
     body = TextAreaField('Body', [validators.Length(min=20)])
+    body_uk = TextAreaField('Body UK', [validators.Length(min=20)])
 
 # Add Article
 @app.route("/add_article", methods=["GET", "POST"])
@@ -171,14 +173,16 @@ def add_article():
     form = ArticleForm(request.form)
     if request.method == 'POST' and form.validate():
         title = form.title.data
+        title_uk = form.title_uk.data
         body = form.body.data
+        body_uk = form.body_uk.data
 
         # Create cursor
         cur = mysql.connection.cursor()
 
         # Execute
-        cur.execute("INSERT INTO articles(title, body, author) VALUES(%s, %s, %s)",
-                    (title, body, session['username']))
+        cur.execute("INSERT INTO articles(title, title_uk, body, body_uk, author) VALUES(%s, %s, %s, %s, %s)",
+                    (title, title_uk, body, body_uk, session['username']))
 
         # Comit to DB
         mysql.connection.commit()
@@ -207,17 +211,22 @@ def edit_article(id):
 
     # Populate article form fields
     form.title.data = article['title']
+    form.title_uk.data = article['title_uk']
     form.body.data = article['body']
+    form.body_uk.data = article['body_uk']
 
 
     if request.method == 'POST' and form.validate():
         title = request.form['title']
+        title_uk = request.form['title_uk']
         body = request.form['body']
+        body_uk = request.form['body_uk']
 
         cur = mysql.connection.cursor()
 
         # Execute
-        cur.execute("UPDATE articles SET title=%s, body=%s WHERE id=%s", (title, body, id))
+        cur.execute("UPDATE articles SET title=%s, title_uk=%s, body=%s, body_uk=%s, WHERE id=%s",
+                    (title, title_uk, body, body_uk, id))
 
         # Comit to DB
         mysql.connection.commit()
@@ -240,6 +249,14 @@ def delete_article(id):
     cur.close()
     flash("Article Deleted", "success")
     return redirect(url_for('dashboard'))
+
+
+@app.route('/change-language/<string:name>', methods=['GET', 'POST'])
+def change_language(name):
+    resp = redirect(url_for('index'))
+    resp.set_cookie('language', name)
+
+    return resp
 
 
 if __name__ == '__main__':
