@@ -258,6 +258,11 @@ def change_language(name):
 
     return resp
 
+#Add Contact Us
+@app.route("/contact_us")
+def contact_us():
+    return render_template("contact_us.html")
+
 
 if __name__ == '__main__':
 
